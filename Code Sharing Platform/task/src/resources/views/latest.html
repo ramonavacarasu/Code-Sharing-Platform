@@ -1,32 +1,34 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Code</title>
+    <title>Latest</title>
 </head>
 <style>
     #load_date {
         color: black;
-        text-shadow: 1px 1px lightseagreen, -1px -1px red;
+        text-shadow: 1px 1px lightseagreen;
         animation-name: change-font-size;
         animation-duration: 2s;
         animation-iteration-count: infinite;
     }
     #code_snippet {
+        margin-bottom: 30px;
         padding: 10px;
         border-style: outset;
         background-color: #ffffff;
-        box-shadow: 5px 5px black, -5px -5px lightseagreen;
+        box-shadow: 5px 5px black, -2px -2px lightseagreen;
 
     }
     body {
-        color: black;
-        text-shadow: 1px 1px blue;
+        color: blue;
         background-color: powderblue;
     }
 
 </style>
 <body>
-    <span id="load_date">{{date}}</span>
-    <pre id="code_snippet">{{code}}</pre>
+<div *ngFor="let code of latest">
+<span id="load_date">{{date}}</span>
+<pre id="code_snippet">{{code}}</pre>
+</div>
 </body>
 </html>

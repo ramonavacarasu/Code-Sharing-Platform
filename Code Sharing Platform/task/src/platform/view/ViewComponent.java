@@ -57,4 +57,5 @@ public class ViewComponent {
         System.out.println(code);
         return code;
     }
+
 }

@@ -1,6 +1,12 @@
 package platform.entity;
 
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Code {
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    String id;
 
     String code;
     String date;
@@ -8,9 +14,18 @@ public class Code {
     public Code() {
     }
 
-    public Code(String code, String date) {
+    public Code(String id, String code, String date) {
+        this.id = id;
         this.code = code;
         this.date = date;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCode() {
