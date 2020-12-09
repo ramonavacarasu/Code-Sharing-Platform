@@ -1,5 +1,5 @@
 
-## [Hyperskill] Code Sharing Platform - Stage 3 
+## [Hyperskill] Code Sharing Platform - Stage 4 
 GET /api/code/N - return JSON with the N-th uploaded code snippet.
 
 GET /code/N - return HTML that contains the N-th uploaded code snippet.

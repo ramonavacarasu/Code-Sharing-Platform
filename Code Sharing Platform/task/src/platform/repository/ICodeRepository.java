@@ -1,8 +1,9 @@
 package platform.repository;
 
-public interface ICodeRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import platform.entity.Code;
 
-    String getCode();
-    String getDate();
-
+@Repository
+public interface ICodeRepository extends JpaRepository<Code, String> {
 }

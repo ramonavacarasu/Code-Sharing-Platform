@@ -3,13 +3,21 @@ package platform.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.*;
+
+@Entity(name = "Code")
 public class Code {
 
+    @Id
+    @Column
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    String id;
+    private String id;
 
-    String code;
-    String date;
+    @Column
+    private String code;
+
+    @Column
+    private String date;
 
     public Code() {
     }
