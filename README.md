@@ -3,19 +3,32 @@
 
 #### Run Java Code on port 8889
  
-GET /api/code/N - return JSON with the N-th uploaded code snippet.
+##### Produces: "application/json;charset=UTF-8"
+POST /api/code/new:  
+-> take a JSON object with a field code and two other fields:
+1. time field contains the time (in seconds) during which the snippet is accessible.
+2. views field contains a number of views allowed for this snippet.
+-> return a UUID of the snippet.
+Code snippets should be accessible via UUID links.
 
-GET /code/N - return HTML that contains the N-th uploaded code snippet.
+GET /api/code/UUID - show what restrictions apply to the code piece. Use the keys time and views for that. A zero value (0) corresponds to the absence of the restriction.
 
-POST /api/code/new - take a JSON object with a single field code, use it as the current code snippet, and return JSON with a single field id. ID is the unique number of the snippet that helps you can access it via the endpoint GET /code/N.
+GET /api/code/latest - return a JSON array with 10 most recently uploaded code snippets sorted from the newest to the oldest (it not returns any restricted snippets).
 
+
+##### Produces: "text/html"
 GET /code/new - return HTML that contains:
-               
-    Tags <textarea id="code_snippet"> ... </textarea> where you can paste a code snippet;
-    Title Create;
+     
+    1. <textarea id="code_snippet"> ... </textarea> with a code snippet;
+    2. <input id="time_restriction" type="text"/> with the time restriction.
+    3. <input id="views_restriction" type="text"/> with contain the views restriction
     Button <button id="send_snippet" type="submit" onclick="send()">Submit</button>.
+    
+GET /code/UUID:
+-> return HTML with corresponding code snippet which contains the following elements:
 
+    1. <span id="time_restriction"> ... </span> in case the time restriction is applied.
+    2. <span id="views_restriction"> ... </span> in case the views restriction is applied.
+-> if only one of the restrictions is applied, there it will be showed only one of the above elements.
 
-GET /api/code/latest - return a JSON array with 10 most recently uploaded code snippets sorted from the newest to the oldest.
-
-GET /code/latest - return HTML that contains 10 most recently uploaded code snippets. Use the title Latest for this page.
+GET /code/latest - return HTML that contains 10 most recently uploaded code snippets (it not returns any restricted snippets). 
