@@ -1,5 +1,5 @@
 
-## [Hyperskill] Code Sharing Platform - Stage 4
+## [Hyperskill] Code Sharing Platform - Stage 5
 
 #### Run Java Code on port 8889
  
@@ -9,7 +9,7 @@ POST /api/code/new:
 1. time field contains the time (in seconds) during which the snippet is accessible.
 2. views field contains a number of views allowed for this snippet.
 -> return a UUID of the snippet.
-Code snippets should be accessible via UUID links.
+Code snippets will be accessible via UUID links.
 
 GET /api/code/UUID - show what restrictions apply to the code piece. Use the keys time and views for that. A zero value (0) corresponds to the absence of the restriction.
 
