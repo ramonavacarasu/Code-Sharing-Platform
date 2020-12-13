@@ -1,3 +1,65 @@
 .code {
     font-family: monospace;
 }
+
+body {
+    color: blue;
+    background-color: powderblue;
+}
+
+span {
+    color: black;
+}
+
+#load_date {
+    margin: 30px;
+    margin-top: 60px;
+    color: blue;
+    padding-left: 10px;
+    text-shadow: 1px 1px lightseagreen;
+}
+#code_snippet {
+    margin-bottom: 30px;
+    padding: 10px;
+    border-style: outset;
+    background-color: #ffffff;
+    box-shadow: 5px 5px black, -2px -2px lightseagreen;
+
+}
+#time_restriction {
+    margin: 40px;
+}
+
+#views_restriction {
+    margin: 40px;
+}
+textarea {
+    padding: 10px;
+    margin: 20px;
+    color: blue;
+    border-style: outset;
+    box-shadow: 5px 5px black, -2px -2px lightseagreen;
+    border-width: 4px;
+    background-color: #ffffff;
+}
+
+button {
+    margin: 30px;
+    margin-left: 100px;
+}
+
+label {
+    margin: 20px;
+}
+
+@keyframes change-padding {
+    0% {
+        padding: 0.1%;
+    }
+    50% {
+        padding: 0.3%;
+    }
+    100% {
+        padding: 0.1%;
+    }
+}

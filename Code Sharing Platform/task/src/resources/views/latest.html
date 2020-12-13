@@ -2,33 +2,14 @@
 <head>
     <meta charset="utf-8">
     <title>Latest</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet"
+          href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/default.min.css">
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 </head>
-<style>
-    #load_date {
-        color: black;
-        text-shadow: 1px 1px lightseagreen;
-        animation-name: change-font-size;
-        animation-duration: 2s;
-        animation-iteration-count: infinite;
-    }
-    #code_snippet {
-        margin-bottom: 30px;
-        padding: 10px;
-        border-style: outset;
-        background-color: #ffffff;
-        box-shadow: 5px 5px black, -2px -2px lightseagreen;
-
-    }
-    body {
-        color: blue;
-        background-color: powderblue;
-    }
-
-</style>
 <body>
-<div *ngFor="let code of latest">
-<span id="load_date">{{date}}</span>
-<pre id="code_snippet">{{code}}</pre>
-</div>
+    <span id="load_date">{{date}}</span>
+    <pre id="code_snippet"><code>{{code}}</code></pre>
 </body>
 </html>

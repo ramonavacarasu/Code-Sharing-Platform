@@ -1,80 +1,123 @@
 package platform.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import platform.entity.Code;
 import platform.service.CodeService;
-
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class CodeController {
 
-    private final CodeService service;
+    private CodeService service;
 
+    @Autowired
     public CodeController(CodeService service) {
         this.service = service;
     }
 
-    @PostMapping(value = "/api/code/new",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/api/code/new", produces = "application/json;charset=UTF-8",
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     String postApiCodeNew(@RequestBody Code newCode) {
         Code code = new Code();
-        code.setId(service.getIndex() + 1 + "");
+        code.setOrderTicket(service.countItems());
+        code.setId(service.generateUUID());
         code.setCode(newCode.getCode());
+        code.setTime(newCode.getTime());
+        code.setViews(newCode.getViews());
         code.setDate(service.getDate());
+        code.setTimeRestriction(newCode.getTime() > 0);
+        code.setViewsRestriction(newCode.getViews() > 0);
         service.saveCode(code);
         return "{ \"id\" : \"" + code.getId() + "\" }";
     }
 
-    @GetMapping(value = "/api/code/{id}")
-    Code getApiCodeN(@PathVariable(value = "id") String id,
-                     HttpServletResponse response) {
-        response.addHeader("Content-Type", "text/html");
-        return service.getCode(id);
-    }
-
-    @GetMapping(value = "/api/code/latest",
-            produces = "application/json;charset=UTF-8")
-    ArrayList<Code> getApiCodeLatest() {
-        ArrayList<Code> latest = new ArrayList<>();
-        long index = service.getIndex();
-        while (latest.size() < 10 && index >= 0) {
-            Code lastCode = service.getCode(index + "");
-            if (lastCode != null) {
-                latest.add(lastCode);
+    @GetMapping(value = "/api/code/{id}", produces = "application/json;charset=UTF-8")
+    Code getApiCodeN(@PathVariable(value = "id") String id) {
+        Code code = service.getCode(id);
+        if (code.isTimeRestriction() && code.isViewsRestriction()) {
+            long consumedTime = service.consumedTime(code.getDate());
+            if (consumedTime < code.getTime() && code.getViews() > 0) {
+                code.setTime(code.getTime() - consumedTime);
+                code.setViews(code.getViews() - 1);
+                service.saveCode(code);
+                return code;
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             }
-            index--;
+        } else if (code.isTimeRestriction()) {
+            long consumedTime = service.consumedTime(code.getDate());
+            if (consumedTime < code.getTime()) {
+                code.setTime(code.getTime() - consumedTime);
+                service.saveCode(code);
+                return code;
+            }  else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+
+        } else if (code.isViewsRestriction()) {
+            if (code.getViews() > 0) {
+                code.setViews(code.getViews() - 1);
+                service.saveCode(code);
+                return code;
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
         }
-        return latest;
+        return code;
     }
 
-    @GetMapping(value = "/code/new", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/api/code/latest", produces = "application/json;charset=UTF-8")
+    List<Code> getApiCodeLatest() {
+        return service.getLatest();
+    }
+
+    @GetMapping(value = "/code/new", produces = "text/html")
     String getCodeNew() {
         return service.getView("codeNew", new Code());
     }
 
-    @GetMapping(value = "/code/{id}")
-    String getCodeN(@PathVariable(value = "id") String id,
-                    HttpServletResponse response) {
-        response.addHeader("Content-Type", "text/html");
-        return service.getView("code", service.getCode(id));
+    @GetMapping(value = "/code/{id}", produces = "text/html")
+    String getCodeN(@PathVariable(value = "id") String id) {
+        Code code = service.getCode(id);
+        if (code.isTimeRestriction() && code.isViewsRestriction()) {
+            long consumedTime = service.consumedTime(code.getDate());
+            if (consumedTime < code.getTime() && code.getViews() > 0) {
+                code.setTime(code.getTime() - consumedTime);
+                code.setViews(code.getViews() - 1);
+                service.saveCode(code);
+                return service.getView("codeWithRestriction", code);
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+        } else if (code.isTimeRestriction()) {
+            long consumedTime = service.consumedTime(code.getDate());
+            if (consumedTime < code.getTime()) {
+                code.setTime(code.getTime() - consumedTime);
+                service.saveCode(code);
+                return service.getView("codeWithTimeRestriction", code);
+            }  else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+        } else if (code.isViewsRestriction()) {
+            if (code.getViews() > 0) {
+                code.setViews(code.getViews() - 1);
+                service.saveCode(code);
+                return service.getView("codeWithViewsRestriction", code);
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+        }
+        return service.getView("code", code);
     }
 
     @GetMapping(value = "/code/latest", produces = "text/html")
         String getCodeLatest() {
-        ArrayList<Code> latest = new ArrayList<>();
-        long index = service.getIndex();
+        List<Code> latest = service.getLatest();
 
-        while (latest.size() < 10 && index >= 0) {
-            Code lastCode = service.getCode(index + "");
-            if (lastCode != null) {
-                latest.add(lastCode);
-            }
-            index--;
-        }
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < latest.size(); i++) {
             sb.append(service.getView("latest", latest.get(i)));
